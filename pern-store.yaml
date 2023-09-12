@@ -1,0 +1,82 @@
+namespace: pern-store
+pern-store:
+  defines: runnable
+  metadata:
+    name: pern-store
+    description: >-
+      A full stack application built with Postgres, Express, React and Node
+      (PERN). It's an e-commerce platform to buy and sell products.
+    icon: https://emojiapi.dev/api/v1/robot.svg
+  containers:
+    pern-store:
+      build: .
+  services:
+    client-port:
+      container: pern-store
+      port: 3000
+      host-port: 3000
+      publish: false
+      protocol: TCP
+      description: Expose port for the client-side of the application.
+    server-port:
+      container: pern-store
+      port: <- $port
+      host-port: <- $port
+      publish: false
+      protocol: TCP
+      description: Expose port for the server-side of the application.
+  connections:
+    postgres-connection:
+      target: postgresql/db
+      service: postgres
+  variables:
+    vite-api-url:
+      env: VITE_API_URL
+      type: string
+      description: API URL for the client-side of the application.
+      value: YOUR_API_URL
+    port:
+      env: PORT
+      type: int
+      description: Port for server-side of the application to listen on.
+      value: '9000'
+    postgres-user:
+      env: POSTGRES_USER
+      type: string
+      description: Username for local Postgres connection.
+      value: user
+    postgres-host:
+      env: POSTGRES_HOST
+      type: string
+      description: Host for the local Postgres connection.
+      value: <- connection-hostname("postgres-connection")
+    postgres-password:
+      env: POSTGRES_PASSWORD
+      type: string
+      description: Password for local Postgres connection.
+      value: '!!!SETME-USE-SECRETS!!!'
+    postgres-db:
+      env: POSTGRES_DB
+      type: string
+      description: Database name for local Postgres connection.
+      value: database
+    postgres-port:
+      env: POSTGRES_PORT
+      type: int
+      description: Port for local Postgres connection.
+      value: <- connection-port("postgres-connection")
+    secret:
+      env: SECRET
+      type: string
+      description: JWT access secret.
+      value: '!!!SETME-USE-SECRETS!!!'
+    refresh-secret:
+      env: REFRESH_SECRET
+      type: string
+      description: JWT refresh secret.
+      value: '!!!SETME-USE-SECRETS!!!'
+    strip-secret-key:
+      env: STRIP_SECRET_KEY
+      type: string
+      description: Secret key for stripe API.
+      value: '!!!SETME-USE-SECRETS!!!'
